@@ -1,0 +1,25 @@
+<module>
+
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='com.google.gwt.core.Core' />
+	<inherits name='com.google.gwt.user.History' />
+
+	<inherits name='com.smartgwt.SmartGwtNoTheme' />
+	<inherits name='com.smartgwt.tools.SmartGwtTools' />
+
+	<inherits name='com.telcordia.theme.gray.FrameworkGray' />
+	<inherits name='com.telcordia.granite.platform.ui.Framework' />
+	
+
+	<!-- inherits name='com.google.gwt.i18n.I18N' />
+	<extend-property name='locale' values='eng' />
+	<extend-property name='locale' values='arb' /-->
+
+	<entry-point class='com.app.client.ApplicationEntryPoint' />
+
+	<source path='client' />
+	<source path='shared'/>
+	
+	<servlet path='/rpcServices/Service1.rpc' class='com.app.server.remote.RemoteServiceServlet1' />
+	
+</module>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="GwtApplicationCore" default="build-all">
+	<description>GwtApplicationCore</description>
+
+	<property file="local.build.properties" />
+	<property file="build.properties" />
+	<property file="libraries.properties" />
+
+	<property name="src.dir" value="src" />
+	<property name="dist" value="dist" />
+	<property name="build" value="build" />
+	<property name="build.classes" value="war/WEB-INF/classes" />
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+	<target name="build-all">
+		<antcall target="clean" />
+		<antcall target="compile" />
+		<antcall target="gwtc" />
+		<antcall target="make-war" />
+	</target>
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+	<target name="clean" description="Delete dirs">
+		<echo message="Cleaning task processing..." />
+		<delete dir="${build}" includeemptydirs="true" failonerror="false" />
+		<delete dir="${dist}" includeemptydirs="true" failonerror="false" />
+		<delete dir="${build.classes}" includes="*/**" includeemptydirs="true" failonerror="false" />
+		<echo message="Cleaning task processing...Ok." />
+	</target>
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+	<target name="compile" depends="clean" description="Compilation source classes">
+		<echo message="Compilation source classes processing..." />
+		<mkdir dir="${build}" />
+		<antcall target="common.compile">
+			<param name="build.dir" value="${build.classes}" />
+			<param name="src.dir" value="${src.dir}" />
+			<param name="compile.classpath" value="compile.classpath" />
+		</antcall>
+		<echo message="Compilation source classes processing...Ok." />
+	</target>
+
+	<target name="common.compile" description="Compilation...">
+		<mkdir dir="${build.dir}" />
+
+		<antcall target="_compile">
+			<param name="_build.dir" value="${build.dir}" />
+			<param name="_src.dir" value="${src.dir}" />
+			<param name="_compile.classpath" value="${compile.classpath}" />
+		</antcall>
+	</target>
+
+	<target name="_compile">
+		<javac destdir="${_build.dir}" source="1.6" target="1.6" debug="true" includeantruntime="false">
+			<src path="${_src.dir}" />
+			<classpath>
+				<path refid="${_compile.classpath}" />
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+	<target name="gwtc" depends="compile" description="GWT compile to JavaScript">
+		<echo message="GWT compilation task processing..." />
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+			<classpath>
+				<pathelement location="${src.dir}" />
+				<path refid="compile.classpath" />
+			</classpath>
+			<jvmarg value="-Xmx512M" />
+
+			<!-- find *.gwt.xml -->
+			<arg value="com.app.GwtApplicationCore" />
+		</java>
+		<echo message="GWT compilation task processing...Ok." />
+	</target>
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+	<target name="make-war" depends="gwtc">
+		<echo message="Making war-file..." />
+		<copy todir="${build}/war" overwrite="true">
+			<fileset dir="war">
+				<exclude name="CVS" />
+				<exclude name="**/*.cvsignore" />
+				<exclude name="**/*.jar" />
+			</fileset>
+		</copy>
+
+		<copy todir="${build}/war/WEB-INF/lib" includeemptydirs="false" overwrite="true">
+			<mapper>
+				<chainedmapper>
+					<!-- remove absolute paths for JAR files -->
+					<flattenmapper />
+				</chainedmapper>
+			</mapper>
+			<fileset refid="asi.fileset" />
+			<fileset refid="gwt.fileset" />
+			<fileset refid="smartgwt.fileset" />
+			<fileset refid="uiframework.fileset" />
+		</copy>
+
+		<war destfile="${dist}/${base.name}.war" basedir="${build}/war" webxml="${build}/war/WEB-INF/web.xml" />
+		<echo message="Making war-file...Ok" />
+	</target>
+
+	<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+	<path id="compile.classpath">
+		<path refid="weblogic.classpath" />
+		<path refid="asi.classpath" />
+		<path refid="gwt.classpath" />
+		<path refid="smartgwt.classpath" />
+		<path refid="uiframework.classpath" />
+	</path>
+
+	<path id="weblogic.classpath">
+		<fileset id="weblogic.fileset" dir="${weblogic.lib.dir}" includes="wlfullclient.jar" />
+	</path>
+	<path id="asi.classpath">
+		<fileset id="asi.fileset" dir="${asi.lib.dir}" excludes="xerces.jar" />
+	</path>
+	<path id="gwt.classpath">
+		<fileset id="gwt.fileset" dir="${gwt.lib.dir}">
+			<include name="gwt-dev.jar" />
+			<include name="gwt-user.jar" />
+		</fileset>
+	</path>
+	<path id="smartgwt.classpath">
+		<fileset id="smartgwt.fileset" dir="${smartgwt.lib.dir}" />
+	</path>
+	<path id="uiframework.classpath">
+		<fileset id="uiframework.fileset" dir="${uiframework.lib.dir}" />
+	</path>
+</project>
