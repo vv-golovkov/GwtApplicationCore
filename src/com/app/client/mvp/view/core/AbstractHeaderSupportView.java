@@ -3,7 +3,6 @@ package com.app.client.mvp.view.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.app.client.mvp.presenter.core.AbstractPresenter;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -14,7 +13,7 @@ import com.telcordia.granite.platform.ui.client.gui.ApplicationHeader;
 import com.telcordia.granite.platform.ui.client.gui.GuiUtils;
 import com.telcordia.granite.platform.ui.client.gui.Statusbar;
 
-public abstract class AbstractHeaderSupportView<T extends AbstractPresenter> extends AbstractViewProvider<T> {
+public abstract class AbstractHeaderSupportView extends AbstractViewProvider {
     private static final String LOGOTYPE = "logo/StcLogo_Trans.png";
     private ApplicationHeader applicationHeader;
     private VLayout mainViewport;

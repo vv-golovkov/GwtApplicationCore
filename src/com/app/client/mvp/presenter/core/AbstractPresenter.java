@@ -2,22 +2,32 @@ package com.app.client.mvp.presenter.core;
 
 import com.app.client.engine.eventbus.EventBusController;
 import com.app.client.engine.util.StatusbarManager;
+import com.app.client.mvp.view.core.AbstractViewProvider;
 import com.app.client.service.Service1;
 import com.app.client.service.Service1Async;
+import com.app.shared.transport.common.DefServiceResponse;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 
-public abstract class AbstractPresenter {
-    protected final Service1Async rpc = Service1.Util.getInstance();
+public abstract class AbstractPresenter<T extends AbstractViewProvider> {
     protected static final EventBusController eventBus = new EventBusController();
+    protected final Service1Async rpc = Service1.Util.getInstance();
     private StatusbarManager statusbar;
+    protected T view;
     
-    public void setStatusbar(StatusbarManager statusbar) {
+    public AbstractPresenter(T view, StatusbarManager statusbar) {
+        this.view = view;
         this.statusbar = statusbar;
     }
     
+    public final void loadView() {
+        view.load();
+        createEventHandlers();
+    }
+    
     /****************************************** ABSTRACT ******************************************/
-    public abstract void registerUIEventHandlers();
+    protected abstract void createEventHandlers();
 
     /****************************************** PROTECTED ******************************************/
     protected void showLoadingDialog(String message) {
@@ -59,5 +69,15 @@ public abstract class AbstractPresenter {
     
     private void inform(String message, BooleanCallback booleanCallback) {
         SC.say(message, booleanCallback);
+    }
+    
+    /****************************************** COMMON ******************************************/
+    protected abstract class CommonCallback implements AsyncCallback<DefServiceResponse> {
+        @Override
+        public void onFailure(Throwable exception) {
+            String errorMessage = exception.getMessage();
+            statusbar.addErrorStatus(exception);
+            showWarning(errorMessage);
+        }
     }
 }

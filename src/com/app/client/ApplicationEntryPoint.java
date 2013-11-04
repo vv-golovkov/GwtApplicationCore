@@ -5,8 +5,10 @@ import java.util.HashMap;
 import com.app.client.engine.context.ApplicationTasks;
 import com.app.client.engine.context.Context;
 import com.app.client.engine.context.command.BuildGuiCommand;
+import com.app.client.engine.util.StatusbarManager;
+import com.app.client.mvp.presenter.Presenter1;
+import com.app.client.mvp.presenter.core.AbstractPresenter;
 import com.app.client.mvp.view.View1;
-import com.app.client.mvp.view.core.AbstractViewProvider;
 import com.telcordia.granite.platform.ui.client.gui.AbstractContext;
 import com.telcordia.granite.platform.ui.client.gui.events.TaskArguments;
 import com.telcordia.granite.platform.ui.client.utils.CmdChainWithWait;
@@ -40,10 +42,16 @@ public class ApplicationEntryPoint extends AbstractEntryPointStub {
 
         // useHistoryFeature();
 
-        AbstractViewProvider<?> view = new View1(context, mainViewport);
-        view.load();
+        AbstractPresenter<?> presenter = getPresenter1();
+        presenter.loadView();
 
         return true;
+    }
+    
+    private AbstractPresenter<?> getPresenter1() {
+        View1 view = new View1(context, mainViewport);
+        StatusbarManager statusbarManager = new StatusbarManager(context.statusBar());
+        return new Presenter1(view, statusbarManager);
     }
 
     /*

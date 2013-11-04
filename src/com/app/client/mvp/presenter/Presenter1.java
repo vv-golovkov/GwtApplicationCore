@@ -2,23 +2,21 @@ package com.app.client.mvp.presenter;
 
 import java.util.List;
 
+import com.app.client.engine.util.StatusbarManager;
 import com.app.client.mvp.presenter.core.AbstractPresenter;
 import com.app.client.mvp.view.View1;
 import com.app.shared.transport.ResourceDto;
 import com.app.shared.transport.common.DefServiceResponse;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 
-public class Presenter1 extends AbstractPresenter {
-    private final View1 view;
-    
-    public Presenter1(View1 view) {
-        this.view = view;
+public class Presenter1 extends AbstractPresenter<View1> {
+    public Presenter1(View1 view, StatusbarManager statusbar) {
+        super(view, statusbar);
     }
-
+    
     @Override
-    public void registerUIEventHandlers() {
+    protected void createEventHandlers() {
         view.addButtonItemHandler(new ButtonItemListener());
         view.addCommandButtonHandler(new CommandButtonListener());
     }
@@ -39,13 +37,6 @@ public class Presenter1 extends AbstractPresenter {
     }
     
     /*********************************** ASYNC ***********************************/
-    abstract class CommonCallback implements AsyncCallback<DefServiceResponse> {
-        @Override
-        public void onFailure(Throwable exception) {
-            showWarning(exception.getMessage());
-        }
-    }
-    
     class GetStringCallback extends CommonCallback {
         @Override
         public void onSuccess(DefServiceResponse defServiceResponse) {

@@ -1,10 +1,9 @@
 package com.app.client.mvp.view.core;
 
-import com.app.client.mvp.presenter.core.AbstractPresenter;
 import com.smartgwt.client.widgets.Window;
 import com.telcordia.granite.platform.ui.client.gui.AbstractContext;
 
-public abstract class AbstractPopupWindowSupportView<T extends AbstractPresenter> extends AbstractViewProvider<T> {
+public abstract class AbstractPopupWindowSupportView extends AbstractViewProvider {
     private static final String defaultTitle = "<font color=red>DEFAULT POPUP WINDOW.</font>";
     private static final String defaultWidth = "50%";
     private static final String defaultHeight = "40%";
