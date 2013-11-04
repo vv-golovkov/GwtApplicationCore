@@ -19,7 +19,6 @@ public class EventBusController {
      * handler.
      */
     private static final Map<EventKey<?>, EventHandler> BUS = new HashMap<EventKey<?>, EventHandler>();
-//    private static final Map<EventKey<?>, EventHandler> BUS = new ConcurrentHashMap<EventKey<?>, EventHandler>();
 
     /**
      * Add handler to event bus.
@@ -29,7 +28,7 @@ public class EventBusController {
      * @param handler
      *            - appropriate handler.
      */
-    protected final <H extends EventHandler> void addHandlerToEventBus(EventKey<H> eventKey, H handler) {
+    public final <H extends EventHandler> void addHandler(EventKey<H> eventKey, H handler) {
         BUS.put(eventKey, handler);
     }
 
@@ -40,7 +39,7 @@ public class EventBusController {
      *            - event to dispatch.
      */
     @SuppressWarnings("unchecked")
-    protected final <H extends EventHandler> void fireEvent(GwtEventSupport<H> specifiedEvent) {
+    public final <H extends EventHandler> void fireEvent(GwtEventSupport<H> specifiedEvent) {
         H handlerForSpecifiedEvent = (H) BUS.get(specifiedEvent.getCurrentEventKey());
         if (handlerForSpecifiedEvent == null) {
             SC.warn("Did not find specified event in the EventBus[" + specifiedEvent.getCurrentEventKey() + "]");

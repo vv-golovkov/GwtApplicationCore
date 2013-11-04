@@ -6,6 +6,7 @@ import com.app.client.engine.context.ApplicationTasks;
 import com.app.client.engine.context.Context;
 import com.app.client.engine.context.command.BuildGuiCommand;
 import com.app.client.engine.util.StatusbarManager;
+import com.app.client.engine.util.UserMessages;
 import com.app.client.mvp.presenter.Presenter1;
 import com.app.client.mvp.presenter.core.AbstractPresenter;
 import com.app.client.mvp.view.View1;
@@ -51,7 +52,7 @@ public class ApplicationEntryPoint extends AbstractEntryPointStub {
     private AbstractPresenter<?> getPresenter1() {
         View1 view = new View1(context, mainViewport);
         StatusbarManager statusbarManager = new StatusbarManager(context.statusBar());
-        return new Presenter1(view, statusbarManager);
+        return new Presenter1(view, new UserMessages(statusbarManager));
     }
 
     /*
